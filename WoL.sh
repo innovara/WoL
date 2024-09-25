@@ -1,7 +1,7 @@
 #
 #   WoL.sh -  Shell script to send WoL magic packets
 #
-#   Copyright (C) 2024, Manuel Fombuena <mfombuena@innovara.co.uk>
+#   Copyright (C) 2024, Manuel Fombuena <fombuena@outlook.com>
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ usage() {
 
  SYNTAX
 
- WoL.sh --mac <MAC> --ip <IP> --port <PORT>
+ WoL.sh --mac <MAC> [OPTIONS...]
 
  OPTIONS
 
@@ -44,10 +44,14 @@ usage() {
    Port to send the magic packet to.
    Optional.
    Default is 9.
+ 
+ --dry-run|-d
+   Don't send the magic packet, just print the command.
+   Optional.
 
  --verbose|-v
-   Print command used to send magic packet.
-   Optional
+   Print the command used to send the magic packet.
+   Optional.
 
  --help|-h
    This help.
@@ -57,9 +61,10 @@ usage() {
 ### HELP ENDS ###
 
 ### VARIABLE INITIALIZATION STARTS ###
-mac=''
-ip='255.255.255.255'
+mac=""
+ip="255.255.255.255"
 port=9
+dry=false
 verbose=false
 ### VARIABLE INITIALIZATION ENDS ###
 
@@ -79,6 +84,10 @@ while true ; do
       ;;
     --port|-p)
       port="${2}"
+      shift
+      ;;
+    --dry-run|-d)
+      dry=true
       shift
       ;;
     --verbose|-v)
@@ -106,13 +115,22 @@ elif [[ ${port} -gt 65535 ]]; then
 fi
 ### ARGUMENT HANDLING ENDS ###
 
+### MAGIC PACKET PREP STARTS ###
 # Magic packet contains 6 bytes of all 255 (FF FF FF FF FF FF in hexadecimal), followed by sixteen repetitions of the target computer's 48-bit MAC address
 # More info on https://en.wikipedia.org/wiki/Wake-on-LAN#Magic_packet
 magicpacket=$(echo $(printf "f%.0s" {1..12}; printf "$mac%.0s" {1..16}) | sed -e 's/../\\x&/g')
+### MAGIC PACKET PREP ENDS ###
 
-echo "Sending magic packet..."
-if [[ ${verbose} == true ]]; then
+### MAGIC PACKET ACTIONS START ###
+if [[ ${dry} != false ]]; then
+  echo "Dry run. Magic packet won't be sent."
   echo "echo -e \""${magicpacket}"\" | nc -u "${ip}" $port"
+else
+  echo "Sending magic packet..."
+  if [[ ${verbose} == true ]]; then
+    echo "echo -e \""${magicpacket}"\" | nc -u "${ip}" $port"
+  fi
+  echo -e $magicpacket | nc -u $ip $port
 fi
-echo -e $magicpacket | nc -u $ip $port
-echo -e "\033[0;32mDone!"
+echo -e "\033[0;32mDone!\033[0m"
+### MAGIC PACKET ACTIONS END ###

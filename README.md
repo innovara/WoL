@@ -2,7 +2,7 @@
 
 ## Introduction
 
-WoL.sh is a relatively simple shell script to send Wake-on-LAN magic packets to the broadcast or to an specific IP address and / or port.
+WoL.sh is a relatively simple shell script to send or only generate Wake-on-LAN magic packets to the broadcast or to an specific IP address and / or port.
 
 ## How to use it
 
@@ -15,7 +15,7 @@ Lastly, execute the script as per below.
 ## Syntax
 
 ```
- WoL.sh --mac <MAC> --ip <IP> --port <PORT>
+ WoL.sh --mac <MAC> [OPTIONS...]
 
  OPTIONS
 
@@ -32,6 +32,14 @@ Lastly, execute the script as per below.
    Port to send the magic packet to.
    Optional.
    Default is 9.
+
+ --dry-run|-d
+   Don't send the magic packet, just print the command.
+   Optional.
+
+ --verbose|-v
+   Print the command used to send magic packet.
+   Optional.
 
  --help|-h
    This help.
