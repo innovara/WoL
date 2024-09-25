@@ -1,21 +1,21 @@
-#   
+#
 #   WoL.sh -  Shell script to send WoL magic packets
-#   
+#
 #   Copyright (C) 2024, Manuel Fombuena <mfombuena@innovara.co.uk>
-#   
+#
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
 #   the Free Software Foundation, either version 3 of the License, or
 #   (at your option) any later version.
-#   
+#
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #   GNU General Public License for more details.
-#   
+#
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#   
+#
 
 export PATH=/sbin:/usr/sbin:$PATH
 
@@ -45,6 +45,10 @@ usage() {
    Optional.
    Default is 9.
 
+ --verbose|-v
+   Print command used to send magic packet.
+   Optional
+
  --help|-h
    This help.
  "
@@ -56,6 +60,7 @@ usage() {
 mac=''
 ip='255.255.255.255'
 port=9
+verbose=false
 ### VARIABLE INITIALIZATION ENDS ###
 
 ### ARGUMENT PROCESSING STARTS ###
@@ -74,6 +79,10 @@ while true ; do
       ;;
     --port|-p)
       port="${2}"
+      shift
+      ;;
+    --verbose|-v)
+      verbose=true
       shift
       ;;
     --*|-*)
@@ -101,6 +110,9 @@ fi
 # More info on https://en.wikipedia.org/wiki/Wake-on-LAN#Magic_packet
 magicpacket=$(echo $(printf "f%.0s" {1..12}; printf "$mac%.0s" {1..16}) | sed -e 's/../\\x&/g')
 
-printf "Sending magic packet..."
+echo "Sending magic packet..."
+if [[ ${verbose} == true ]]; then
+  echo "echo -e \""${magicpacket}"\" | nc -u "${ip}" $port"
+fi
 echo -e $magicpacket | nc -u $ip $port
-printf "\033[0;32m Done!\n"
+echo -e "\033[0;32mDone!"
