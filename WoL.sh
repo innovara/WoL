@@ -44,7 +44,7 @@ usage() {
    Port to send the magic packet to.
    Optional.
    Default is 9.
- 
+
  --dry-run|-d
    Don't send the magic packet, just print the command.
    Optional.
@@ -88,11 +88,11 @@ while true ; do
       ;;
     --dry-run|-d)
       dry=true
-      shift
+      shift 0
       ;;
     --verbose|-v)
       verbose=true
-      shift
+      shift 0
       ;;
     --*|-*)
       echo "ERROR:  invalid syntax. Use -h for help."
