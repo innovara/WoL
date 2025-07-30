@@ -22,17 +22,16 @@ export PATH=/sbin:/usr/sbin:$PATH
 ### HELP STARTS ###
 usage() {
   echo "
-
  Shell script to send a magic packet to turn on a device with Wake-On-LAN enabled.
 
  SYNTAX
 
- WoL.sh --mac <MAC> [OPTIONS...]
+ ./WoL.sh --mac <MAC> [OPTIONS...]
 
  OPTIONS
 
  --mac|-m
-   MAC address of the device you want to turn on.
+   MAC address of the device you want to turn on (format: XX:XX:XX:XX:XX:XX).
    Mandatory.
 
  --ip|-i
@@ -54,8 +53,14 @@ usage() {
    Optional.
 
  --help|-h
-   This help.
- "
+   Show this help message.
+
+ EXAMPLES
+
+ ./WoL.sh --mac 00:11:22:33:44:55
+ ./WoL.sh -m 00:11:22:33:44:55 -i 192.168.1.100 -p 7
+ ./WoL.sh --mac 00:11:22:33:44:55 --dry-run --verbose
+"
   exit 1
 }
 ### HELP ENDS ###
